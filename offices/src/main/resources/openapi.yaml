@@ -1,0 +1,228 @@
+openapi: 3.0.0
+info:
+  title: Office API
+  version: 1.0.0
+  description: API for managing office locations
+
+tags:
+  - Files
+
+servers:
+  - url: /api/v1/offices  # Replace with your actual base path
+
+paths:
+  /offices:
+    get:
+      operationId: getOffices
+      summary: List all offices
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficePage'
+
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    post:
+      operationId: createOffice
+      summary: Create a new office
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Office'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Office'
+        '400':
+          description: Bad Request
+        '409':
+          description: Conflict
+  /offices/{id}:
+    get:
+      operationId: getOfficeById
+      summary: Get an office by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Office'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      operationId: updateOfficeById
+      summary: Update an office
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Office'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Office'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      operationId: deleteOfficeById
+      summary: Delete an office
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /offices/search:
+    get:
+      operationId: findOffices
+      summary: Find offices by geolocation
+      parameters:
+        - name: latitude
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: longitude
+          in: query
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficePage'
+        '400':
+          description: Bad Request
+
+components:
+  schemas:
+    Office:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the office.
+        name:
+          type: string
+          description: The name of the office.
+        address:
+          type: string
+          description: The address of the office.
+        city:
+          type: string
+          description: The city where the office is located.
+        state:
+          type: string
+          description: The state where the office is located.
+        zip:
+          type: string
+          description: The ZIP code of the office location.
+        latitude:
+          type: number
+          description: The latitude coordinate of the office location.
+          format: double
+        longitude:
+          type: number
+          description: The longitude coordinate of the office location.
+          format: double
+        open:
+          type: string
+          description: The opening time of the office.
+          format: time
+        close:
+          type: string
+          description: The closing time of the office.
+          format: time
+#        hoursOfOperation:
+#          type: object
+#          description: The hours of operation for the office for each day of the week.
+#          additionalProperties:
+#            $ref: '#/components/schemas/Hours'
+      required:
+        - id
+        - name
+        - latitude
+        - longitude
+    Hours:
+      type: object
+      properties:
+        open:
+          type: string
+          description: The opening time.
+          format: time
+        close:
+          type: string
+          description: The closing time.
+          format: time
+      required:
+        - open
+        - close
+    OfficePage:
+      type: object
+      properties:
+        elapsed:
+          type: string
+        correlationId:
+          type: string
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Office'
+      required:
+        - content
+

@@ -1,0 +1,28 @@
+version: "3.3"
+services:
+  offices-postgres:
+    image: "127418365645.dkr.ecr.us-east-1.amazonaws.com/offices-postgresql:latest"
+    ports:
+      - "9090:9090"
+      #- "51000-52000:51000-52000"
+
+    env_file:
+      - local.env
+
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - POSTGRES_URL=jdbc:postgresql://172.28.1.33:5432/offices
+      - POSRGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - SERVER_PORT=9090
+      - REDIS_HOST=172.28.1.79
+#      - KEYCLOAK_ADMIN_CLIENT_SECRET=${KEYCLOAK_ADMIN_CLIENT_SECRET}
+
+    networks:
+      node_net:
+        ipv4_address: 172.28.1.12
+
+networks:
+  node_net:
+    external:
+      name: docker_node_net

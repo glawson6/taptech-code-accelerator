@@ -1,0 +1,118 @@
+[
+  {
+    "id": "1",
+    "name": "Office A",
+    "address": "123 Main St",
+    "city": "City A",
+    "state": "State A",
+    "zip": "12345",
+    "latitude": 40.7128,
+    "longitude": -74.0060,
+    "open": "08:00:00",
+    "close": "17:00:00",
+    "hoursOfOperation": {
+      "MONDAY": {
+        "open": "08:00:00",
+        "close": "17:00:00"
+      },
+      "TUESDAY": {
+        "open": "08:00:00",
+        "close": "17:00:00"
+      },
+      "WEDNESDAY": {
+        "open": "08:00:00",
+        "close": "17:00:00"
+      },
+      "THURSDAY": {
+        "open": "08:00:00",
+        "close": "17:00:00"
+      },
+      "FRIDAY": {
+        "open": "08:00:00",
+        "close": "17:00:00"
+      }
+    }
+  },
+  {
+    "id": "2",
+    "name": "Office B",
+    "address": "456 Oak St",
+    "city": "City B",
+    "state": "State B",
+    "zip": "54321",
+    "latitude": 34.0522,
+    "longitude": -118.2437,
+    "open": "09:00:00",
+    "close": "18:00:00",
+    "hoursOfOperation": {
+      "MONDAY": {
+        "open": "09:00:00",
+        "close": "18:00:00"
+      },
+      "TUESDAY": {
+        "open": "09:00:00",
+        "close": "18:00:00"
+      },
+      "WEDNESDAY": {
+        "open": "09:00:00",
+        "close": "18:00:00"
+      },
+      "THURSDAY": {
+        "open": "09:00:00",
+        "close": "18:00:00"
+      },
+      "FRIDAY": {
+        "open": "09:00:00",
+        "close": "18:00:00"
+      }
+    }
+  },
+  {
+    "id": "3",
+    "name": "Office C",
+    "latitude": 51.5074,
+    "longitude": -0.1278,
+    "hoursOfOperation": {
+      "MONDAY": {
+        "open": "09:00:00",
+        "close": "17:00:00"
+      },
+      "TUESDAY": {
+        "open": "09:00:00",
+        "close": "17:00:00"
+      },
+      "WEDNESDAY": {
+        "open": "09:00:00",
+        "close": "17:00:00"
+      },
+      "THURSDAY": {
+        "open": "09:00:00",
+        "close": "17:00:00"
+      },
+      "FRIDAY": {
+        "open": "09:00:00",
+        "close": "17:00:00"
+      }
+    }
+  },
+  {
+    "id": "4",
+    "name": "Office D",
+    "address": "789 Elm St",
+    "city": "City D",
+    "state": "State D",
+    "zip": "98765",
+    "latitude": 35.6895,
+    "longitude": 139.6917
+  },
+  {
+    "id": "5",
+    "name": "Office E",
+    "address": "321 Pine St",
+    "city": "City E",
+    "state": "State E",
+    "zip": "54321",
+    "latitude": 40.7128,
+    "longitude": -74.0060
+  }
+]

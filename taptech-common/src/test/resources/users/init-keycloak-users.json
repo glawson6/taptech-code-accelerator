@@ -1,0 +1,34 @@
+[
+  {
+    "password": "admin",
+    "email": "admin.bart@cc.com",
+    "lastName": "simpson",
+    "firstName": "bart",
+    "contextId": "offices",
+    "roleId": "admin"
+  },
+  {
+    "password": "user",
+    "email": "user.lisa@cc.com",
+    "lastName": "simpson",
+    "firstName": "lisa",
+    "contextId": "offices",
+    "roleId": "user"
+  },
+  {
+    "password": "user",
+    "email": "user.maggy@cc.com",
+    "lastName": "simpson",
+    "firstName": "maggy",
+    "contextId": "offices",
+    "roleId": "user"
+  },
+  {
+    "password": "admin",
+    "email": "admin@cc.com",
+    "lastName": "Picker",
+    "firstName": "Nit",
+    "contextId": "offices",
+    "roleId": "admin"
+  }
+]

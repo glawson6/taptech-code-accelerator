@@ -1,0 +1,138 @@
+openapi: 3.0.3
+info:
+  title: File Transfer API
+  description: API for managing file transfers, downloads, and file management.
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Main (production) server
+  - url: https://sandbox.api.example.com/v1
+    description: Sandbox server for testing
+paths:
+  /files:
+    get:
+      summary: List all files
+      description: Retrieve a list of all files available on the server.
+      responses:
+        '200':
+          description: A JSON array of files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/File'
+    post:
+      summary: Upload a new file
+      description: Upload a new file to the server.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: File uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '400':
+          description: Invalid input
+  /files/{fileId}:
+    get:
+      summary: Download a file
+      description: Retrieve a specific file from the server.
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The requested file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: File not found
+    delete:
+      summary: Delete a file
+      description: Delete a specific file from the server.
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: File deleted successfully
+        '404':
+          description: File not found
+  /files/{fileId}/metadata:
+    get:
+      summary: Get file metadata
+      description: Retrieve metadata for a specific file.
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The requested file metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileMetadata'
+        '404':
+          description: File not found
+components:
+  schemas:
+    File:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file
+        name:
+          type: string
+          description: Name of the file
+        size:
+          type: integer
+          format: int64
+          description: Size of the file in bytes
+        uploadDate:
+          type: string
+          format: date-time
+          description: Date and time when the file was uploaded
+    FileMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file
+        name:
+          type: string
+          description: Name of the file
+        size:
+          type: integer
+          format: int64
+          description: Size of the file in bytes
+        uploadDate:
+          type: string
+          format: date-time
+          description: Date and time when the file was uploaded
+        mimeType:
+          type: string
+          description: MIME type of the file

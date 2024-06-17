@@ -1,0 +1,19 @@
+[
+  {
+    "roleId": "admin",
+    "roleName": "Admin",
+    "permissions": [
+      "create",
+      "read",
+      "update",
+      "delete"
+    ]
+  },
+  {
+    "roleId": "user",
+    "roleName": "User",
+    "permissions": [
+      "read"
+    ]
+  }
+]

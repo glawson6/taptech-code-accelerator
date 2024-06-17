@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+
+  postgres:
+    container_name: docker-postgres-1
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${KC_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+    networks:
+      node_net:
+        ipv4_address: 172.28.1.31
+
+volumes:
+  cache:
+    driver: local
+  postgres_data:
+    driver: local
+  postgres_data2:
+    driver: local
+  postgres_data3:
+    driver: local
+
+networks:
+  node_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
