@@ -34,8 +34,8 @@ import spock.mock.DetachedMockFactory
  - `test_authentication`: Tests the `authenticate` method with a bearer token.
  - `test_validLoginJwt`: Tests the `validLoginJwt` method with an access token.
  - `test_security_credentials_provider`: Tests the retrieval of access credentials from the `ClientSecretKeyCloakSecurityCredentialsProvider`.
- - `test_KeyCloakService_KCRealmRepresentation_KCRealmRepresentationBuilder`: Tests the `KCRealmRepresentationBuilder` of the `KeyCloakService`.
- - `test_KeyCloakService_ProtocolMapperRepresentation_ProtocolMapperRepresentationBuilder`: Tests the `ProtocolMapperRepresentationBuilder` of the `KeyCloakService`.
+ - `test_KeyCloakService_KCRealmRepresentation_KCRealmRepresentationBuilder`: Tests the `KCRealmRepresentationBuilder` of the `KeyCloakManagementService`.
+ - `test_KeyCloakService_ProtocolMapperRepresentation_ProtocolMapperRepresentationBuilder`: Tests the `ProtocolMapperRepresentationBuilder` of the `KeyCloakManagementService`.
 
  4. **Helper Methods**: The class also contains several helper methods like `setUpUsers`, `logSomeStuff`, `toBasicAuthCreds`, and `basicAuthCredsFrom` which are used to assist in setting up and executing the tests.
 
@@ -44,7 +44,7 @@ import spock.mock.DetachedMockFactory
  In summary, this test class is ensuring that the `KeyCloakAuthenticationManager` is working as expected and is able to interact correctly with a Keycloak server for user authentication and authorization.
  */
 
-@SpringBootTest(classes = [TestConfig.class,BaseKeyCloakInfraStructure.UserLoadConfig.class],
+@SpringBootTest(classes = [TestConfig.class],
         properties = [
                 "spring.main.allow-bean-definition-overriding=true",
                 "idp.provider.keycloak.initialize-on-startup=true",
@@ -72,7 +72,7 @@ class KeyCloakAuthenticationManagerTest extends BaseKeyCloakInfraStructure {
     InMemoryUserContextPermissionsService userContextPermissionsService
 
     @Autowired
-    KeyCloakService keyCloakService
+    KeyCloakManagementService keyCloakService
 
     @Autowired
     KeyCloakIdpProperties keyCloakIdpProperties
@@ -287,13 +287,13 @@ class KeyCloakAuthenticationManagerTest extends BaseKeyCloakInfraStructure {
                 .verifyComplete()
     }
 
-    // test for KeyCloakService.KCRealmRepresentation.KCRealmRepresentationBuilder
+    // test for KeyCloakManagementService.KCRealmRepresentation.KCRealmRepresentationBuilder
     def test_KeyCloakService_KCRealmRepresentation_KCRealmRepresentationBuilder(){
         /*
 
          */
         def kcRealmRepresentation = keyCloakService.defaultRealmRepresentation("offices")
-        def kcRealmRepresentationBuilder = new KeyCloakService.KCRealmRepresentation.KCRealmRepresentationBuilder()
+        def kcRealmRepresentationBuilder = new KeyCloakManagementService.KCRealmRepresentation.KCRealmRepresentationBuilder()
 
         String str = kcRealmRepresentationBuilder.toString()
 
@@ -307,7 +307,7 @@ class KeyCloakAuthenticationManagerTest extends BaseKeyCloakInfraStructure {
         String id, String name, String protocol, String protocolMapper,Boolean consentRequired,
                                                String consentText, Map<String,String> config
          */
-        def builder = new KeyCloakService.ProtocolMapperRepresentation.ProtocolMapperRepresentationBuilder()
+        def builder = new KeyCloakManagementService.ProtocolMapperRepresentation.ProtocolMapperRepresentationBuilder()
         builder.id("id")
         builder.name("name")
         builder.consentRequired(true)

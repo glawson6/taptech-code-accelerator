@@ -1,6 +1,7 @@
 package com.taptech.common.security.keycloak;
 
 import com.taptech.common.security.client.ClientIdProviders;
+import com.taptech.common.security.token.TokenContextService;
 import com.taptech.common.security.user.UserContextPermissions;
 import com.taptech.common.security.user.UserContextPermissionsService;
 import com.taptech.common.security.user.UserContextRequest;
@@ -9,10 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.ClientResource;
@@ -64,10 +62,12 @@ import static com.taptech.common.security.utils.SecurityUtils.fromBearerHeaderTo
 
 
 @Builder
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeyCloakAuthenticationManager extends AbstractUserDetailsReactiveAuthenticationManager implements ClientIdProviders {
+public class KeyCloakAuthenticationManager extends AbstractUserDetailsReactiveAuthenticationManager implements ClientIdProviders,
+        TokenContextService {
 
     /*
     AbstractUserDetailsReactiveAuthenticationManager
@@ -205,6 +205,7 @@ public class KeyCloakAuthenticationManager extends AbstractUserDetailsReactiveAu
 
         return passwordGrantLoginMap(username, password).map(convertResultMapToJwt(jwtDecoder));
     }
+
 
     public Mono<Optional<Jwt>> passwordGrantLoginJwt(String username, String password, String contextId) {
 

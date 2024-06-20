@@ -43,8 +43,8 @@ import static com.taptech.common.utils.RandomPasswordGenerator.generateRandomSpe
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KeyCloakService {
-    static final Logger logger = LoggerFactory.getLogger(KeyCloakService.class);
+public class KeyCloakManagementService {
+    static final Logger logger = LoggerFactory.getLogger(KeyCloakManagementService.class);
     public static final String MASTER = "master";
     public static final String ADMIN_CLI = "admin-cli";
     /*

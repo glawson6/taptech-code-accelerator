@@ -29,7 +29,7 @@ In the left-hand menu, click on `Clients`. This will display a list of clients c
 
 From the list of clients, click on `admin-cli`. This will open the settings for the `admin-cli` client.
 
-![Admin CLI Client Secret](admin-cli-client-secret.png)
+![Admin CLI Client Secret](offices/admin-cli-client-secret.png)
 ### Step 5 - Navigate to Credentials
 
 In the `admin-cli` client settings, click on the `Credentials` tab. This will display the client credentials.

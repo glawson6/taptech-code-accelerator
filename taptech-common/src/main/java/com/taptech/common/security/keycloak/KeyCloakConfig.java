@@ -1,5 +1,6 @@
 package com.taptech.common.security.keycloak;
 
+import com.taptech.common.security.token.TokenContextService;
 import com.taptech.common.security.user.UserContextPermissionsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.keycloak.admin.client.Keycloak;
@@ -13,8 +14,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 
 import static com.taptech.common.security.keycloak.KeyCloakConstants.*;
@@ -74,10 +73,10 @@ public class KeyCloakConfig {
     }
 
     @Bean
-    KeyCloakService keyCloakService(KeyCloakIdpProperties keyCloakIdpProperties,
-                                    @Qualifier("keyCloakObjectMapper") ObjectMapper objectMapper,
-                                    Keycloak keycloak){
-        return KeyCloakService.builder()
+    KeyCloakManagementService keyCloakService(KeyCloakIdpProperties keyCloakIdpProperties,
+                                              @Qualifier("keyCloakObjectMapper") ObjectMapper objectMapper,
+                                              Keycloak keycloak){
+        return KeyCloakManagementService.builder()
                 .objectMapper(objectMapper)
                 .keyCloakIdpProperties(keyCloakIdpProperties)
                 .keycloak(keycloak)
@@ -114,17 +113,44 @@ public class KeyCloakConfig {
                 .build();
     }
 
+    @Bean("tokenContextService")
+    @ConditionalOnMissingBean
+    TokenContextService keyCloakTokenService(UserContextPermissionsService userContextPermissionsService,
+                                             Keycloak keycloak,
+                                             KeyCloakJwtDecoderFactory keyCloakJwtDecoderFactory,
+                                             KeyCloakIdpProperties keyCloakIdpProperties){
+
+        Assert.notNull(keyCloakIdpProperties.defaultContextId(), "Keycloak idp.provider.keycloak.default-context-id cannot be null");
+        Assert.notNull(keyCloakIdpProperties.clientId(), "Keycloak idp.provider.keycloak.client-id cannot be null");
+        Assert.notNull(keyCloakIdpProperties.clientSecret(), "Keycloak idp.provider.keycloak.client-secret cannot be null");
+        Assert.notNull(keyCloakIdpProperties.tokenUri(), "Keycloak idp.provider.keycloak.token-uri cannot be null");
+        Assert.notNull(keyCloakIdpProperties.baseUrl(), "Keycloak idp.provider.keycloak.base-url cannot be null");
+        Assert.notNull(keyCloakIdpProperties.jwksetUri(), "Keycloak idp.provider.keycloak.jwkset-uri cannot be null");
+        Assert.notNull(keyCloakIdpProperties.issuerUrl(), "Keycloak idp.provider.keycloak.issuer-url cannot be null");
+
+
+        return KeyCloakTokenContextService.builder()
+                .defaultContext(keyCloakIdpProperties.defaultContextId())
+                .userContextPermissionsService(userContextPermissionsService)
+                .realmClientId(keyCloakIdpProperties.clientId())
+                .realmClientSecret(keyCloakIdpProperties.clientSecret())
+                .realmBaseUrl(keyCloakIdpProperties.baseUrl())
+                .keycloak(keycloak)
+                .jwtDecoderFactory(keyCloakJwtDecoderFactory)
+                .build();
+    }
+
     @Bean
     @ConditionalOnProperty(prefix = "idp.provider.keycloak", name = "initialize-on-startup", havingValue = "true", matchIfMissing = false)
-    KeyCloakInitializer keyCloakInitializer(KeyCloakService keyCloakService, Keycloak keycloak,
+    KeyCloakInitializer keyCloakInitializer(KeyCloakManagementService keyCloakManagementService, Keycloak keycloak,
                                             KeyCloakIdpProperties keyCloakIdpProperties,
                                             UserContextPermissionsService userContextPermissionsService,
-                                           @Qualifier("keyCloakObjectMapper") ObjectMapper objectMapper){
+                                            @Qualifier("keyCloakObjectMapper") ObjectMapper objectMapper){
         return KeyCloakInitializer.builder()
                 .keycloak(keycloak)
                 .keyCloakIdpProperties(keyCloakIdpProperties)
                // .objectMapper(objectMapper)
-                .keyCloakService(keyCloakService)
+                .keyCloakManagementService(keyCloakManagementService)
                 .initializeOnStartup(keyCloakIdpProperties.initializeOnStartup())
                 .initializeRealmsOnStartup(keyCloakIdpProperties.initializeRealmsOnStartup())
                 .initializeUsersOnStartup(keyCloakIdpProperties.initializeUsersOnStartup())

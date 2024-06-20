@@ -8,6 +8,14 @@
     "roleId": "admin"
   },
   {
+    "password": "admin",
+    "email": "admin.bart@ca.com",
+    "lastName": "simpson",
+    "firstName": "bart-ca",
+    "contextId": "offices",
+    "roleId": "admin"
+  },
+  {
     "password": "user",
     "email": "user.lisa@cc.com",
     "lastName": "simpson",

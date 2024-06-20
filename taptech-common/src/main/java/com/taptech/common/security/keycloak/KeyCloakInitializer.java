@@ -34,7 +34,7 @@ public class KeyCloakInitializer {
     KeyCloakIdpProperties keyCloakIdpProperties;
     @Builder.Default
     ObjectMapper objectMapper = new ObjectMapper();
-    KeyCloakService keyCloakService;
+    KeyCloakManagementService keyCloakManagementService;
     @Builder.Default
     String initKeycloakUsersPath = INIT_KEYCLOAK_USERS_PATH;
     @Builder.Default
@@ -96,7 +96,7 @@ public class KeyCloakInitializer {
                     .contextName(REALM_ID)
                     .name(REALM_ID)
                     .build();
-            keyCloakService.createRealmFromContextEntity(context);
+            keyCloakManagementService.createRealmFromContextEntity(context);
         } catch (Exception e) {
             logger.warn("initKeycloakRealm Error creating realm", e);
         }
@@ -110,7 +110,7 @@ public class KeyCloakInitializer {
             Map<String, RoleEntity> roleEntityMap = loadRoleEntitiesFromClassPath(objectMapper).apply(initKeycloakRolesPath);
             logger.debug("initKeycloakUsers. Read {} users and {} roles", users.size(), roleEntityMap.size());
             users.stream().forEach(userEntity -> {
-                keyCloakService.postUserToKeyCloakSync(userEntity);
+                keyCloakManagementService.postUserToKeyCloakSync(userEntity);
                 Set<String> permissions = roleEntityMap.entrySet().stream()
                         .filter(entry -> userEntity.getRoleId().equals(entry.getKey()))
                         .map(Map.Entry::getValue)

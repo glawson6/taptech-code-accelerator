@@ -5,7 +5,7 @@ import com.taptech.common.security.jwt.SecurityReactiveJwtDecoder;
 import com.taptech.common.security.keycloak.EnableKeyCloak;
 import com.taptech.common.security.keycloak.KeyCloakAuthenticationManager;
 import com.taptech.common.security.keycloak.KeyCloakReactiveAuthenticationManagerResolver;
-import com.taptech.common.security.keycloak.KeyCloakService;
+import com.taptech.common.security.keycloak.KeyCloakManagementService;
 import com.taptech.common.security.token.EnableTokenApi;
 import com.taptech.common.security.user.InMemoryUserContextPermissionsService;
 import com.taptech.common.security.user.UserContextPermissionsConfig;
@@ -89,7 +89,7 @@ public class SecurityConfig {
         InMemoryUserContextPermissionsService userContextPermissionsService;
 
         @Autowired
-        KeyCloakService keyCloakService;
+        KeyCloakManagementService keyCloakManagementService;
 
         @Order(Ordered.HIGHEST_PRECEDENCE)
         @Bean
@@ -111,51 +111,7 @@ public class SecurityConfig {
             //http.cors(corsSpec -> corsSpec.configurationSource(corsConfigurationSource()));
             return http.build();
         }
-
-        //@PostConstruct
-        public void afterInit() {
-            /*
-            logger.info("Loading users into keycloak......");
-
-            // write a method to load users from a json file
-
-
-            userContextPermissionsService.addPermissions("admin", OFFICES, Set.of("ADMIN"));
-            userContextPermissionsService.addPermissions("admin@cc.com", OFFICES, Set.of("ADMIN"));
-            userContextPermissionsService.addPermissions("user@cc.com", OFFICES, Set.of("USER"));
-            userContextPermissionsService.addPermissions("user", OFFICES, Set.of("USER"));
-
-            ContextEntity context = ContextEntity.builder()
-                    .contextId(OFFICES)
-                    .contextName(OFFICES)
-                    .name(OFFICES)
-                    .build();
-
-            keyCloakService.createRealmFromContextEntity(context);
-            UserEntity userEntity1 = UserEntity.builder()
-                    .contextId(OFFICES)
-                    .email("admin@cc.com")
-                    .password("admin")
-                    .build();
-            UserEntity userEntity2 = UserEntity.builder()
-                    .contextId(OFFICES)
-                    .email("user@cc.com")
-                    .password("user")
-                    .build();
-
-            keyCloakService.postUserToKeyCloak(userEntity1).subscribe();
-            keyCloakService.postUserToKeyCloak(userEntity2).subscribe();
-
-
-
-
-             */
-        }
-
-
-
     }
-
 
     @Configuration
     @Import({UserContextPermissionsConfig.class})
@@ -223,6 +179,9 @@ public class SecurityConfig {
                 });
             } );
 
+            http.httpBasic(httpBasicSpec -> {
+               httpBasicSpec.authenticationManager(authenticationServiceAuthenticationManager);
+            });
             return http.build();
         }
 

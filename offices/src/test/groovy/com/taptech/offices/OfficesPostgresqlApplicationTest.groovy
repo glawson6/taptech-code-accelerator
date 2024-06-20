@@ -29,13 +29,6 @@ import reactor.test.StepVerifier
 import spock.mock.DetachedMockFactory
 
 @SpringBootTest(classes = [
-
-        /*  DataSourceAutoConfiguration.class,
-          DataSourceTransactionManagerAutoConfiguration.class,
-          HibernateJpaAutoConfiguration.class,
-          JpaRepositoriesAutoConfiguration.class,
-
-         */
         OfficesConfiguration.class,
         TestOfficeConfig.class],
         properties = [
@@ -49,7 +42,6 @@ import spock.mock.DetachedMockFactory
                 "idp.provider.keycloak.initialize-realms-on-startup=false",
                 "idp.provider.keycloak.initialize-users-on-startup=true",
         ])
-//@ContextConfiguration(classes = [TestConfig.class,DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class])
 class OfficesPostgresqlApplicationTest extends BaseKeyCloakInfraStructure {
 
     private static final Logger logger = LoggerFactory.getLogger(OfficesPostgresqlApplicationTest.class);
@@ -351,7 +343,6 @@ class OfficesPostgresqlApplicationTest extends BaseKeyCloakInfraStructure {
     def test_get_offices() {
 
         given:
-        setUpUsers()
         def results = keyCloakAuthenticationManager.passwordGrantLoginMap(adminCC, "admin", OFFICES).toFuture().join()
         def accessToken = results.get("access_token")
 

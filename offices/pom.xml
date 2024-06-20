@@ -11,8 +11,8 @@
     <groupId>com.taptech</groupId>
     <artifactId>offices</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>trees</name>
-    <description>trees</description>
+    <name>offices</name>
+    <description>offices</description>
     <properties>
         <!--image.repo.name>${env.DOCKER_IMAGE_REPO_NAME}</image.repo.name-->
         <java.version>21</java.version>

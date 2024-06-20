@@ -17,7 +17,7 @@ import spock.mock.DetachedMockFactory
 import java.util.stream.Collectors
 
 
-@SpringBootTest(classes = [TestConfig.class, BaseKeyCloakInfraStructure.UserLoadConfig.class],
+@SpringBootTest(classes = [TestConfig.class],
         properties = [
                 "spring.main.allow-bean-definition-overriding=true",
                 "idp.provider.keycloak.realm=offices",
@@ -46,7 +46,7 @@ class KeyCloakInitializerTest extends BaseKeyCloakInfraStructure {
     InMemoryUserContextPermissionsService userContextPermissionsService
 
     @Autowired
-    KeyCloakService keyCloakService
+    KeyCloakManagementService keyCloakService
 
     @Autowired
     KeyCloakIdpProperties keyCloakIdpProperties
@@ -79,7 +79,7 @@ class KeyCloakInitializerTest extends BaseKeyCloakInfraStructure {
 
     def test_expected_users_loaded_from_json() {
         given:
-        def expectedUsers = ["admin.bart@cc.com","user.lisa@cc.com","user.maggy@cc.com"]
+        def expectedUsers = ["admin.bart@cc.com","admin.bart@ca.com","user.lisa@cc.com","user.maggy@cc.com"]
         ObjectMapper objectMapper = new ObjectMapper();
         String initKeycloakUsersPath = env.getProperty("idp.provider.keycloak.init-keycloak-users-path")
         List<UserEntity> users = keyCloakInitializer.loadUserEntitiesFromClassPath(objectMapper).apply(initKeycloakUsersPath)

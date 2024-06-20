@@ -35,8 +35,8 @@ public class KeyCloakUtils {
     static final Logger logger = LoggerFactory.getLogger(KeyCloakUtils.class);
 
     public static final String KEY_CLOAK_DEFAULT_CONTEXT = "user-context-service";
-    final static Mono<Map<String, Object>> EMPTY_ACCESS_CREDS = Mono.empty();
-    final static ParameterizedTypeReference<Map<String, Object>> MAP_OBJECT = new ParameterizedTypeReference<Map<String, Object>>() {
+    public final static Mono<Map<String, Object>> EMPTY_ACCESS_CREDS = Mono.empty();
+    public final static ParameterizedTypeReference<Map<String, Object>> MAP_OBJECT = new ParameterizedTypeReference<Map<String, Object>>() {
     };
     final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     final static ResourceLoader resourceLoader = new DefaultResourceLoader();

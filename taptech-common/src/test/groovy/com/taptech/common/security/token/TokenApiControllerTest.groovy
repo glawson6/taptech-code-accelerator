@@ -21,7 +21,7 @@ import spock.mock.DetachedMockFactory
 
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 
-@ContextConfiguration(classes = [TestApiControllerConfig.class, BaseKeyCloakInfraStructure.UserLoadConfig.class])
+@ContextConfiguration(classes = [TestApiControllerConfig.class])
 @WebFluxTest(/*controllers = [TokenApiController.class],*/
         properties = [
                 "spring.main.allow-bean-definition-overriding=true",
@@ -96,18 +96,6 @@ class TokenApiControllerTest extends BaseKeyCloakInfraStructure {
                 .exchange()
                 .expectStatus().isUnauthorized()
     }
-
-    /*
-    def test_public_login_401_no_auth() {
-
-        expect:
-        webTestClient.get().uri("/public/login")
-                .exchange()
-                .expectStatus().isUnauthorized()
-    }
-
-     */
-
 
     def test_public_refresh_token() {
 

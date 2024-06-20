@@ -50,11 +50,11 @@ To start the services, navigate to the `src/test/docker` directory in your termi
 
 To start the service, you can use the command provided in the `src/test/docker` directory. The exact command will depend on the service you are trying to start. Please refer to the specific instructions provided in the `src/test/docker` directory.
 ```bash
-./start-offices-postgres.sh
+./start-offices.sh
 ```
 
 ### Optional Step 5 - Extract the `admin-cli` client secret from a running Keycloak installation
-read the document [here](EXTRACTING-ADMIN-CLI-CLIENT-SECRET.md)
+read the document [here](../EXTRACTING-ADMIN-CLI-CLIENT-SECRET.md)
 
 ### Optional Step 6 - turn security on by changing SPRING_PROFILES_ACTIVE to `secure` in the `local.env` file and restart the service and setting admin-cli client secret 
 ```properties
@@ -64,6 +64,6 @@ KEYCLOAK_ADMIN_CLIENT_SECRET=<admin-cli client secret>
 ```
 ### Restart the service
 ```bash
-./start-offices-postgres.sh
+./start-offices.sh
 ```
 That's it! You have now built a Docker image locally and started the services for the `offices-postgres` project.

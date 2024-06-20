@@ -1,16 +1,13 @@
 package com.taptech.common.security.keycloak
 
-import com.taptech.common.security.ContextEntity
-import com.taptech.common.security.UserEntity
+
 import com.taptech.common.security.user.InMemoryUserContextPermissionsService
-import com.taptech.common.security.user.UserContextPermissionsService
 import com.fasterxml.jackson.databind.ObjectMapper
 import dasniko.testcontainers.keycloak.KeycloakContainer
 import org.keycloak.admin.client.Keycloak
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.testcontainers.containers.Network
@@ -131,10 +128,7 @@ class BaseKeyCloakInfraStructure extends Specification {
 
         System.setProperty("idp.provider.keycloak.user-uri", "/admin/realms/{realm}/users")
         System.setProperty("idp.provider.keycloak.use-strict-jwt-validators", "false")
-        /*
-        System.setProperty("idp.token.endpoint", authServerUrl+"/realms/master/protocol/openid-connect/token")
-        System.setProperty("idp.provider.keycloak.realm", OFFICES)
-         */
+
 
     }     // run before the first feature method
     def cleanupSpec() {
@@ -152,7 +146,7 @@ class BaseKeyCloakInfraStructure extends Specification {
     InMemoryUserContextPermissionsService userContextPermissionsService
 
     @Autowired
-    KeyCloakService keyCloakService
+    KeyCloakManagementService keyCloakService
 
     @Autowired
     KeyCloakIdpProperties keyCloakIdpProperties
@@ -189,94 +183,4 @@ class BaseKeyCloakInfraStructure extends Specification {
 
     }
 
-    public static class UserLoader {
-        KeyCloakService keyCloakService;
-        UserContextPermissionsService userContextPermissionsService;
-
-        public UserLoader(KeyCloakService keyCloakService, UserContextPermissionsService userContextPermissionsService) {
-            this.keyCloakService = keyCloakService;
-            this.userContextPermissionsService = userContextPermissionsService;
-        }
-
-        def setUpUsers() {
-            String username = "admin"
-            String realm = "master" // KeyCloakConstants.MASTER
-            userContextPermissionsService.addPermissions("admin", OFFICES, Set.of("ADMIN"));
-            userContextPermissionsService.addPermissions("admin@cc.com", OFFICES, Set.of("ADMIN"));
-            userContextPermissionsService.addPermissions("user@cc.com", OFFICES, Set.of("USER"));
-            userContextPermissionsService.addPermissions("user", OFFICES, Set.of("USER"));
-
-            //logSomeStuff(OFFICES)
-
-            ContextEntity context = ContextEntity.builder()
-                    .contextId(OFFICES)
-                    .contextName(OFFICES)
-                    .name(OFFICES)
-                    .build();
-
-            keyCloakService.createRealmFromContextEntity(context);
-            UserEntity userEntity1 = UserEntity.builder()
-                    .contextId(OFFICES)
-                    .email("admin@cc.com")
-                    .password("admin")
-                    .build();
-            UserEntity userEntity2 = UserEntity.builder()
-                    .contextId(OFFICES)
-                    .email("user@cc.com")
-                    .password("user")
-                    .build();
-
-            keyCloakService.postUserToKeyCloak(userEntity1).subscribe(
-                    responseEntity -> {
-                        logger.info("UserEntity1: {}", responseEntity.getBody());
-                    }
-            );
-            keyCloakService.postUserToKeyCloak(userEntity2).subscribe(
-                    responseEntity -> {
-                        logger.info("UserEntity2: {}", responseEntity.getBody());
-                    }
-            );
-
-
-            keyCloakService.findUsersFromRealm(OFFICES)
-                    .subscribe(users -> logger.info(OFFICES + " Users: {}", users.getUsername()))
-            keyCloakService.findUsersFromRealm(KeyCloakConstants.MASTER)
-                    .subscribe(users -> logger.info(KeyCloakConstants.MASTER + " Users: {}", users.getUsername()))
-
-
-        }
-
-    }
-
-    @Configuration
-    @AutoConfigureAfter(KeyCloakConfig.class)
-    public static class UserLoadConfig{
-
-
-        /*
-        @Bean
-        KeyCloakInitializer keyCloakInitializer(Keycloak keycloak,
-                                                KeyCloakService keyCloakService,
-                                                KeyCloakIdpProperties keyCloakIdpProperties){
-            return KeyCloakInitializer.builder()
-                    .keycloak(keycloak)
-                    .keyCloakService(keyCloakService)
-                    .keyCloakIdpProperties(keyCloakIdpProperties)
-                    .build();
-        }
-
-         */
-
-
-        @Bean
-        BaseKeyCloakInfraStructure.UserLoader userLoader(KeyCloakService keyCloakService,
-                                                         UserContextPermissionsService userContextPermissionsService){
-            BaseKeyCloakInfraStructure.UserLoader userLoader = new BaseKeyCloakInfraStructure.UserLoader(keyCloakService, userContextPermissionsService);
-            //userLoader.setUpUsers()
-            return userLoader;
-        }
-
-
-
-    }
 }

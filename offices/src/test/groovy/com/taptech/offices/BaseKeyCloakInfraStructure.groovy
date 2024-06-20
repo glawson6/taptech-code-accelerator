@@ -1,13 +1,12 @@
 package com.taptech.offices
 
-import com.taptech.common.security.ContextEntity
-import com.taptech.common.security.UserEntity
+
 import com.taptech.common.security.keycloak.KeyCloakIdpProperties
 import com.taptech.common.security.user.UserContextPermissionsService
 import com.taptech.common.security.keycloak.KeyCloakAuthenticationManager
 import com.taptech.common.security.keycloak.KeyCloakConstants
 import com.taptech.common.security.keycloak.KeyCloakJwtDecoderFactory
-import com.taptech.common.security.keycloak.KeyCloakService
+import com.taptech.common.security.keycloak.KeyCloakManagementService
 import dasniko.testcontainers.keycloak.KeycloakContainer
 import org.keycloak.admin.client.Keycloak
 import org.slf4j.Logger
@@ -17,7 +16,6 @@ import org.testcontainers.containers.Network
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.ShellStrategy
-import org.testcontainers.utility.DockerImageName
 import org.testcontainers.utility.MountableFile
 import spock.lang.Shared
 import spock.lang.Specification
@@ -38,27 +36,24 @@ class BaseKeyCloakInfraStructure extends Specification{
     static Network network = Network.newNetwork();
     @Shared
     static PostgreSQLContainer<?> postgres = createPostgresqlContainer()
+    public static final String KEYCLOAK = "keycloak"
 
     static PostgreSQLContainer createPostgresqlContainer() {
         PostgreSQLContainer container = new PostgreSQLContainer<>("postgres")
                 .withNetwork(network)
                 .withNetworkAliases(POSTGRES_NETWORK_ALIAS)
                 .withCopyFileToContainer(MountableFile.forClasspathResource("postgres/keycloak-dump.sql"), "/docker-entrypoint-initdb.d/keycloak-dump.sql")
-                .withUsername("keycloak")
-                .withPassword("keycloak")
-                .withDatabaseName("keycloak")
+                .withUsername(KEYCLOAK)
+                .withPassword(KEYCLOAK)
+                .withDatabaseName(KEYCLOAK)
                 .withLogConsumer(new Slf4jLogConsumer(logger))
                 .waitingFor(new ShellStrategy()
                         .withCommand(
                                 "psql -q -o /dev/null -c \"SELECT 1\" -d keycloak -U keycloak")
                         .withStartupTimeout(Duration.of(60, ChronoUnit.SECONDS)))
-
-
         return container
 
     }
-
-    public static final DockerImageName KEYCLOAK_IMAGE = DockerImageName.parse("bitnami/keycloak:23.0.5");
 
     @Shared
     public static KeycloakContainer keycloakContainer;
@@ -88,8 +83,8 @@ class BaseKeyCloakInfraStructure extends Specification{
                 .withEnv("KEYCLOAK_ADMIN_PASSWORD", "admin")
                 .withEnv("KC_DB", "postgres")
                 .withEnv("KC_DB_URL", jdbcUrl)
-                .withEnv("KC_DB_USERNAME", "keycloak")
-                .withEnv("KC_DB_PASSWORD", "keycloak")
+                .withEnv("KC_DB_USERNAME", KEYCLOAK)
+                .withEnv("KC_DB_PASSWORD", KEYCLOAK)
 
         keycloakContainer.start()
 
@@ -129,10 +124,7 @@ class BaseKeyCloakInfraStructure extends Specification{
 
         System.setProperty("idp.provider.keycloak.user-uri", "/admin/realms/{realm}/users")
         System.setProperty("idp.provider.keycloak.use-strict-jwt-validators", "false")
-        /*
-        System.setProperty("idp.token.endpoint", authServerUrl+"/realms/master/protocol/openid-connect/token")
-        System.setProperty("idp.provider.keycloak.realm", OFFICES)
-         */
+
 
     }     // run before the first feature method
     def cleanupSpec() {
@@ -150,7 +142,7 @@ class BaseKeyCloakInfraStructure extends Specification{
     UserContextPermissionsService userContextPermissionsService
 
     @Autowired
-    KeyCloakService keyCloakService
+    KeyCloakManagementService keyCloakService
 
     @Autowired
     KeyCloakIdpProperties keyCloakIdpProperties
@@ -165,6 +157,7 @@ class BaseKeyCloakInfraStructure extends Specification{
         keyCloakService != null
     }
 
+    /*
     def setUpUsers() {
         String username = "admin"
         String realm = "master" // KeyCloakConstants.MASTER
@@ -181,10 +174,10 @@ class BaseKeyCloakInfraStructure extends Specification{
                 .name(OFFICES)
                 .build();
 
-        keyCloakService.createRealmFromContextEntity(context);
+        keyCloakManagementService.createRealmFromContextEntity(context);
         UserEntity userEntity1 = UserEntity.builder()
                 .contextId(OFFICES)
-                .email("admin@cc.com")
+                .email(adminCC)
                 .password("admin")
                 .build();
         UserEntity userEntity2 = UserEntity.builder()
@@ -193,25 +186,27 @@ class BaseKeyCloakInfraStructure extends Specification{
                 .password("user")
                 .build();
 
-        keyCloakService.postUserToKeyCloak(userEntity1).subscribe(
+        keyCloakManagementService.postUserToKeyCloak(userEntity1).subscribe(
                 responseEntity -> {
                     logger.info("UserEntity1: {}", responseEntity.getBody());
                 }
         );
-        keyCloakService.postUserToKeyCloak(userEntity2).subscribe(
+        keyCloakManagementService.postUserToKeyCloak(userEntity2).subscribe(
                 responseEntity -> {
                     logger.info("UserEntity2: {}", responseEntity.getBody());
                 }
         );
 
 
-        keyCloakService.findUsersFromRealm(OFFICES)
+        keyCloakManagementService.findUsersFromRealm(OFFICES)
                 .subscribe(users -> logger.info(OFFICES + " Users: {}", users.getUsername()))
-        keyCloakService.findUsersFromRealm(KeyCloakConstants.MASTER)
+        keyCloakManagementService.findUsersFromRealm(KeyCloakConstants.MASTER)
                 .subscribe(users -> logger.info(KeyCloakConstants.MASTER + " Users: {}", users.getUsername()))
 
 
     }
+
+     */
 
     static String basicAuthCredsFrom(String s1, String s2) {
         return "Basic " + toBasicAuthCreds(s1, s2);

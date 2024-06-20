@@ -7,7 +7,7 @@ import com.taptech.common.security.keycloak.EnableKeyCloak
 import com.taptech.common.security.keycloak.KeyCloakAuthenticationManager
 import com.taptech.common.security.keycloak.KeyCloakIdpProperties
 import com.taptech.common.security.keycloak.KeyCloakJwtDecoderFactory
-import com.taptech.common.security.keycloak.KeyCloakService
+import com.taptech.common.security.keycloak.KeyCloakManagementService
 import com.taptech.common.security.user.HttpReadingUserContextPermissionsService
 import com.taptech.common.security.user.InMemoryUserContextPermissionsService
 import com.taptech.common.security.user.SecurityUser
@@ -89,7 +89,7 @@ class AuthenticationServiceAuthenticationManagerTest extends BaseKeyCloakInfraSt
     InMemoryUserContextPermissionsService userContextPermissionsService
 
     @Autowired
-    KeyCloakService keyCloakService
+    KeyCloakManagementService keyCloakService
 
     @Autowired
     KeyCloakIdpProperties keyCloakIdpProperties

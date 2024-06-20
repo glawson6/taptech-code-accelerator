@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory
 import spock.lang.Specification
 
 
-class KeyCloakServiceTest extends Specification {
-    private static final Logger logger = LoggerFactory.getLogger(KeyCloakServiceTest.class);
+class KeyCloakManagementServiceTest extends Specification {
+    private static final Logger logger = LoggerFactory.getLogger(KeyCloakManagementServiceTest.class);
 
     public static final String OFFICES = "offices";
     /*
@@ -30,12 +30,12 @@ class KeyCloakServiceTest extends Specification {
                                      List<CredentialRepresentationKC> credentials
      */
     def test_UserRepresentationKC() {
-        def userRepresentation = new com.taptech.common.security.keycloak.KeyCloakService.UserRepresentationKC("id", "email", "firstName", "lastName", 1L, "username", true, true, null);
+        def userRepresentation = new KeyCloakManagementService.UserRepresentationKC("id", "email", "firstName", "lastName", 1L, "username", true, true, null);
         expect:
         userRepresentation != null
     }
 
-  // test for KeyCloakService.KCClientRepresentation.KCClientRepresentationBuilder
+  // test for KeyCloakManagementService.KCClientRepresentation.KCClientRepresentationBuilder
     def test_KCClientRepresentationBuilder() {
         /*
         String id, String clientId, String name, String description, String rootUrl, String adminUrl, String baseUrl,
@@ -52,7 +52,7 @@ class KeyCloakServiceTest extends Specification {
                                          List<String> optionalClientScopes,
                                          Boolean access, String origin
          */
-        def kcClientRepresentationBuilder = new com.taptech.common.security.keycloak.KeyCloakService.KCClientRepresentation.KCClientRepresentationBuilder();
+        def kcClientRepresentationBuilder = new KeyCloakManagementService.KCClientRepresentation.KCClientRepresentationBuilder();
         kcClientRepresentationBuilder.clientId("clientId");
         kcClientRepresentationBuilder.id("id");
         kcClientRepresentationBuilder.description("description");

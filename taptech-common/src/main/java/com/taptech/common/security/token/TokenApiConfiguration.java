@@ -15,7 +15,7 @@ public class TokenApiConfiguration {
     TokenApiApiDelegate tokenApiDelegate(KeyCloakAuthenticationManager authenticationManager, ObjectMapper objectMapper){
         logger.info("Creating TokenApiDelegate");
         return KeyCloakTokenApiDelegate.builder()
-                .keyCloakAuthenticationManager(authenticationManager)
+                .tokenContextService(authenticationManager)
                 //.objectMapper(objectMapper)
                 .build();
     }
