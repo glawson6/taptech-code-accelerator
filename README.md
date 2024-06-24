@@ -1,8 +1,18 @@
+# Integration Testing with Keycloak, Spring Security, Spring Boot, and Spock Framework
 
+## Introduction
+In today's security landscape, OAuth2 has become a standard for securing APIs, providing a more robust and flexible approach
+than basic authentication. My journey into this domain began with a critical solution architecture decision: migrating
+from basic authentication to OAuth2 client credentials for obtaining access tokens. While Spring Security offers strong
+support for both authentication methods, I encountered a significant challenge. I could not find a declarative approach
+that seamlessly integrated basic authentication and JWT authentication within the same application.
 
-# Taptech-Code-Accelerator
-
-This is the parent project for the taptech-code-accelerator modules. It's responsible for managing common dependencies and configurations for all the child modules.
+This gap in functionality motivated me to explore and develop a solution that not only meets the authentication requirements
+but also supports comprehensive integration testing. This article shares my findings and provides a detailed guide on setting
+up Keycloak, integrating it with Spring Security and Spring Boot, and utilizing the Spock Framework for repeatable integration tests.
+By the end of this article, you will clearly understand how to configure and test your authentication mechanisms effectively 
+with Keycloak as an identity provider, ensuring a smooth transition to OAuth2 while maintaining the flexibility to support 
+basic authentication where necessary.
 
 ## Prerequisites
 
@@ -10,19 +20,22 @@ Before you begin, ensure you have met the following requirements:
 
 - You have installed Java 21. If not, you can download it from [here](https://www.oracle.com/java/technologies/javase-jdk21-downloads.html).
 - You have a basic understanding of Maven and Java.
+- This is the parent project for the taptech-code-accelerator modules. It manages common dependencies and configurations 
+for all the child modules. You can get it from here [taptech-code-accelerator](https://github.com/glawson6/taptech-code-accelerator.git)
 
 ## Building taptech-code-accelerator
 
 To build the `taptech-code-accelerator` project, follow these steps:
 
-1. Open a terminal.
-
-2. Change the current directory to the root directory of the `taptech-code-accelerator` project:
+1. `git clone` the project from the repository:
+```bash
+git clone https://github.com/glawson6/taptech-code-accelerator.git
+```
+2. Open a terminal and change the current directory to the root directory of the `taptech-code-accelerator` project.
 
 ```bash
 cd path/to/taptech-code-accelerator
 ```
-
 3. Run the following command to build the project:
 
 ```bash
@@ -35,20 +48,6 @@ and installs the packaged code in your local Maven repository. It also builds th
 Please ensure you have the necessary permissions to execute these commands.
 
 
-## Introduction
-In today's security landscape, OAuth2 has become a standard for securing APIs, providing a more robust and flexible approach 
-compared to basic authentication. My journey into this domain began with a critical solution architecture decision: migrating 
-from basic authentication to OAuth2 client credentials for obtaining access tokens. While Spring Security offers strong 
-support for both authentication methods, I encountered a significant challenge. I was unable to find a declarative approach 
-that seamlessly integrated basic authentication and JWT authentication within the same application.
-
-This gap in functionality motivated me to explore and develop a solution that not only meets the authentication requirements 
-but also supports comprehensive integration testing. This article shares my findings and provides a detailed guide on setting 
-up Keycloak, integrating it with Spring Security and Spring Boot, and utilizing the Spock Framework for repeatable unit tests. 
-By the end of this article, you will have a clear understanding of how to configure and test your authentication mechanisms 
-effectively with Keycloak as an identity provider, ensuring a smooth transition to OAuth2 while maintaining the flexibility 
-to support basic authentication where necessary.
-
 ### Keycloak Initial Setup
 
 Setting up Keycloak for integration testing involves several steps. This guide will walk you through creating a local environment 
@@ -57,16 +56,19 @@ PostgreSQL dump for your integration tests.
 
 #### Step 1: Create a `local.env` File
 
-First, create a `local.env` file to store environment variables needed for the Keycloak service. Here's an example of what the `local.env` file might look like:
+First, navigate to the taptech-common/src/test/resources/docker directory. Create a `local.env` file to store environment variables needed for the Keycloak service. Here's an example of what the `local.env` file might look like:
 
 ```env
-KEYCLOAK_USER=admin
-KEYCLOAK_PASSWORD=admin
-DB_VENDOR=POSTGRES
-DB_ADDR=keycloak-db
-DB_DATABASE=keycloak
-DB_USER=keycloak
-DB_PASSWORD=keycloak
+POSTGRES_DB=keycloak
+POSTGRES_USER=keycloak
+POSTGRES_PASSWORD=admin
+KEYCLOAK_ADMIN=admin
+KEYCLOAK_ADMIN_PASSWORD=admin
+KC_DB_USERNAME=keycloak
+KC_DB_PASSWORD=keycloak
+SPRING_PROFILES_ACTIVE=secure-jwk
+KEYCLOAK_ADMIN_CLIENT_SECRET=DCRkkqpUv3XlQnosjtf8jHleP7tuduTa
+IDP_PROVIDER_JWKSET_URI=http://172.28.1.90:8080/realms/offices/protocol/openid-connect/certs
 ```
 
 #### Step 2: Start the Keycloak Service
@@ -74,25 +76,25 @@ DB_PASSWORD=keycloak
 Next, start the Keycloak service using the provided `docker-compose.yml` file and the `./start-services.sh` script. The `docker-compose.yml` file should define the Keycloak and PostgreSQL services.
 
 ```yaml
-version: '3.7'
-
+version: '3.8'
 services:
+
    postgres:
-      image: postgres:16.2
+      image: postgres
       volumes:
          - postgres_data:/var/lib/postgresql/data
+         #- ./dump:/docker-entrypoint-initdb.d
       environment:
-         POSTGRES_DB: ${POSTGRES_DB}
-         POSTGRES_USER: ${POSTGRES_USER}
-         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      #    ports:
-      #      - 5432:5432
+         POSTGRES_DB: keycloak
+         POSTGRES_USER: ${KC_DB_USERNAME}
+         POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
       networks:
-         - keycloak_network
+         node_net:
+            ipv4_address: 172.28.1.31
 
    keycloak:
       image: quay.io/keycloak/keycloak:23.0.6
-      command: start
+      command: start #--import-realm
       environment:
          KC_HOSTNAME: localhost
          KC_HOSTNAME_PORT: 8080
@@ -103,34 +105,34 @@ services:
          KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
          KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
          KC_DB: postgres
-         KC_DB_URL: jdbc:postgresql://postgres/${POSTGRES_DB}
-         KC_DB_USERNAME: ${POSTGRES_USER}
-         KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+         KC_DB_URL: jdbc:postgresql://172.28.1.31/keycloak
+         KC_DB_USERNAME: ${KC_DB_USERNAME}
+         KC_DB_PASSWORD: ${KC_DB_PASSWORD}
       ports:
          - 8080:8080
+      volumes:
+         - ./realms:/opt/keycloak/data/import
       restart: always
       depends_on:
          - postgres
       networks:
-         - keycloak_network
+         node_net:
+            ipv4_address: 172.28.1.90
 
 volumes:
    postgres_data:
       driver: local
 
 networks:
-   keycloak_network:
-      driver: host
-
+   node_net:
+      ipam:
+         driver: default
+         config:
+            - subnet: 172.28.0.0/16
 
 ```
 
 Then, use the `./start-services.sh` script to start the services:
-
-```bash
-#!/bin/bash
-docker-compose up -d
-```
 
 #### Step 3: Access Keycloak Admin Console
 
@@ -158,15 +160,9 @@ To verify the setup, you can use HTTP requests to obtain tokens.
 
 1. **Get Access Token**:
 
-   ```bash
-   curl -X POST "http://localhost:8080/realms/myrealm/protocol/openid-connect/token" \
-   -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "username=myuser" \
-   -d "password=mypassword" \
-   -d "grant_type=password" \
-   -d "client_id=myclient" \
-   -d "client_secret=your_client_secret"
-   ```
+```bash
+http -a admin-cli:[client secret] --form POST http://localhost:8080/realms/master/protocol/openid-connect/token grant_type=password username=admin password=Pa55w0rd
+```
 
 2. **Verify the Token**:
     - Ensure you receive a JSON response with an `access_token`.
@@ -178,16 +174,16 @@ After verifying the setup, create a PostgreSQL dump of the Keycloak database to 
 1. **Create the Dump**:
 ```bash
 docker exec -i docker-postgres-1 /bin/bash -c "PGPASSWORD=keycloak pg_dump --username keycloak keycloak" > dump/keycloak-dump.sql
-   ```
+```
 
 2. **Save the File**:
     - Save the `keycloak-dump.sql` file locally. This file will be used to seed the database for integration tests.
 
-By following these steps, you will have a Keycloak instance configured and ready for integration testing with Spring Security and the Spock Framework.
+Following these steps, you will have a Keycloak instance configured and ready for integration testing with Spring Security and the Spock Framework.
 
 ### Spring Security and Keycloak Integration Tests
 
-In this section, we will set up integration tests for Spring Security and Keycloak using Spock and Testcontainers. This involves configuring dependencies, setting up Testcontainers for Keycloak and PostgreSQL, and creating a base class to hold the necessary configurations.
+This section will set up integration tests for Spring Security and Keycloak using Spock and Testcontainers. This involves configuring dependencies, setting up Testcontainers for Keycloak and PostgreSQL, and creating a base class to hold the necessary configurations.
 
 #### Step 1: Add Dependencies
 
@@ -396,8 +392,6 @@ method, which copies a file from the classpath to a specified location within th
 
 If you hvae problems starting, you might need to restart the dokcer compose file and extract the client secret.
 This is explained in [EXTRACTING-ADMIN-CLI-CLIENT-SECRET](EXTRACTING-ADMIN-CLI-CLIENT-SECRET.md)
-
-```bash
 
 The code snippet for this is:
 
