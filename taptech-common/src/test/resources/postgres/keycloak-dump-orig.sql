@@ -1650,7 +1650,7 @@ a3e25a70-28ee-4897-ada2-4d9921fe2e25	t	f	offices-realm	0	f	\N	\N	t	\N	f	147fb5d8
 62c71480-d212-4dea-aa42-a88bc8efb235	t	f	realm-management	0	f	\N	\N	t	\N	f	offices	openid-connect	0	f	f	${client_realm-management}	f	client-secret	\N	\N	\N	t	f	f	f
 7ea9781f-d754-49b5-8e4d-27881873d893	t	f	security-admin-console	0	t	\N	/admin/offices/console/	f	\N	f	offices	openid-connect	0	f	f	${client_security-admin-console}	f	client-secret	${authAdminUrl}	\N	\N	t	f	f	f
 48daad2a-6675-4d49-967d-13b861c8bc6c	t	f	admin-cli	0	f	DCRkkqpUv3XlQnosjtf8jHleP7tuduTa		f		f	147fb5d8-1c48-45bf-b0fe-f7af521e2dc3	openid-connect	0	f	f	${client_admin-cli}	t	client-secret			\N	t	t	t	f
-e19f251d-902a-4d0b-92ce-a1c7f2eb5008	t	t	offices	0	f	5Lg4hJJKlDDnfTs4vaAdOK95c2DDps5p33t7		f		f	offices	openid-connect	-1	f	f	offices	f	client-secret		Client for offices	\N	f	f	t	f
+e19f251d-902a-4d0b-92ce-a1c7f2eb5008	t	t	offices	0	f	x9RIGyc7rh8A4w4sMl8U5rF3HuNm2wOC3WOD		f		f	offices	openid-connect	-1	f	f	offices	f	client-secret		Client for offices	\N	f	t	t	f
 \.
 
 
@@ -2199,7 +2199,6 @@ COPY public.credential (id, salt, type, user_id, created_date, user_label, secre
 192e2e23-253b-4c63-8a8b-df2e4e0ad16e	\N	password	91da198a-364c-4f0c-b87c-4deaa31d184d	1716228417335	\N	{"value":"c2uTA+KmjflayCgp8yy8u1ub0usfiQN4a06N06u9NHA=","salt":"LjNICNMMX5xcg1vguo90fQ==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 4acce149-3292-4388-b70a-355e7bbd3da8	\N	password	705050f8-38b5-4348-99cf-cb2b76d0e887	1716228754065	\N	{"value":"2HWtMivPV1uHdsejnlVinqqomx2MT/r5MqrqP2QqGY0=","salt":"LIEx0D4vyrY9AtycoJINTA==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 7142c401-95d5-487b-9e5c-11f2a8462827	\N	password	4ad9a9e3-429f-4663-af24-b1a8e2d0fde2	1716228754066	\N	{"value":"uBZ+Mt1lxSdJ0OesYhjmEiRHAIU/IUdVnYBi/jibLGs=","salt":"4pxdy+E0aWtLSkuisrmzWQ==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
-ac3c2489-a0bf-4907-a5d4-06d7b2b3b1bb	\N	password	c4330233-c295-4022-a5d8-68b30063b191	1718633997890	\N	{"value":"e344GKBaGReO16r/HXxjyf/gD5NqUnDtEDhsohXQhgk=","salt":"TtJ3mGkZ8uPyKNhrVlYJpQ==","additionalParameters":{}}	{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}	10
 \.
 
 
@@ -3455,10 +3454,6 @@ COPY public.user_entity (id, email, email_constraint, email_verified, enabled, f
 6332ed27-f4f3-4b16-92ac-b07fd0f89052	\N	4080bcdf-d536-43a1-84d7-7244949e6caa	f	t	\N	\N	\N	147fb5d8-1c48-45bf-b0fe-f7af521e2dc3	service-account-admin-cli	1716228516487	48daad2a-6675-4d49-967d-13b861c8bc6c	0
 705050f8-38b5-4348-99cf-cb2b76d0e887	user@cc.com	user@cc.com	t	t	\N	\N	\N	offices	user@cc.com	1716228754015	\N	0
 4ad9a9e3-429f-4663-af24-b1a8e2d0fde2	admin@cc.com	admin@cc.com	t	t	\N	\N	\N	offices	admin@cc.com	1716228754015	\N	0
-c4330233-c295-4022-a5d8-68b30063b191	\N	960044b6-27d8-4469-8bdf-7f541583b9cc	f	t	\N	\N	\N	offices	service-account-offices	1718633997845	\N	0
-2f2d5c86-8573-467f-94dd-d83642e5fdd3	admin.bart@cc.com	admin.bart@cc.com	t	t	\N	bart	simpson	offices	admin.bart@cc.com	1718633998056	\N	0
-dcae3b6a-42c5-4b70-b4fa-b2c59fca2290	user.lisa@cc.com	user.lisa@cc.com	t	t	\N	lisa	simpson	offices	user.lisa@cc.com	1718633998090	\N	0
-b521d35c-170b-4abf-ba56-e7e24cfda52e	user.maggy@cc.com	user.maggy@cc.com	t	t	\N	maggy	simpson	offices	user.maggy@cc.com	1718633998104	\N	0
 \.
 
 
@@ -3566,10 +3561,6 @@ fa5c3341-4fe0-4579-b29d-e48b3ac3058a	6332ed27-f4f3-4b16-92ac-b07fd0f89052
 fdeddaae-5ae4-4105-9933-1ce170953842	6332ed27-f4f3-4b16-92ac-b07fd0f89052
 9039b1a0-c01c-43eb-8137-dd05612a071b	705050f8-38b5-4348-99cf-cb2b76d0e887
 9039b1a0-c01c-43eb-8137-dd05612a071b	4ad9a9e3-429f-4663-af24-b1a8e2d0fde2
-9039b1a0-c01c-43eb-8137-dd05612a071b	c4330233-c295-4022-a5d8-68b30063b191
-9039b1a0-c01c-43eb-8137-dd05612a071b	2f2d5c86-8573-467f-94dd-d83642e5fdd3
-9039b1a0-c01c-43eb-8137-dd05612a071b	dcae3b6a-42c5-4b70-b4fa-b2c59fca2290
-9039b1a0-c01c-43eb-8137-dd05612a071b	b521d35c-170b-4abf-ba56-e7e24cfda52e
 \.
 
 

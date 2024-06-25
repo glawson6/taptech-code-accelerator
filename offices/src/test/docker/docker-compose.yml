@@ -88,8 +88,8 @@ services:
       KC_DB_PASSWORD: ${KC_DB_PASSWORD}
     ports:
       - 8080:8080
-    volumes:
-      - ./realms:/opt/keycloak/data/import
+ ##   volumes:
+ ##     - ./realms:/opt/keycloak/data/import
     restart: always
     depends_on:
       - postgres

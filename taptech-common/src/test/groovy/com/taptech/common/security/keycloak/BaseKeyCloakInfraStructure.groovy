@@ -118,7 +118,7 @@ class BaseKeyCloakInfraStructure extends Specification {
         System.setProperty("idp.provider.keycloak.admin-username", adminUsername)
         System.setProperty("idp.provider.keycloak.admin-password", adminPassword)
         System.setProperty("idp.provider.keycloak.default-context-id", OFFICES)
-        System.setProperty("idp.provider.keycloak.client-secret", "x9RIGyc7rh8A4w4sMl8U5rF3HuNm2wOC3WOD")
+        System.setProperty("idp.provider.keycloak.client-secret", "5Lg4hJJKlDDnfTs4vaAdOK95c2DDps5p33t7")
         System.setProperty("idp.provider.keycloak.client-id", OFFICES)
         System.setProperty("idp.provider.keycloak.token-uri", "/realms/offices/protocol/openid-connect/token")
         System.setProperty("idp.provider.keycloak.jwkset-uri", authServerUrl + "/realms/offices/protocol/openid-connect/certs")

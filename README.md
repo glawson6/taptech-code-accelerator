@@ -143,16 +143,17 @@ Once Keycloak has started, log in to the admin console at [http://localhost:8080
 1. **Create a Realm**:
     - Log in to the Keycloak admin console.
     - In the left-hand menu, click on "Add Realm".
-    - Enter the name of the realm (e.g., `myrealm`) and click "Create".
+    - Enter the name of the realm (e.g., `offices`) and click "Create".
 
 2. **Create a Client**:
     - Select your newly created realm from the left-hand menu.
     - Click on "Clients" in the left-hand menu.
     - Click on "Create" in the right-hand corner.
-    - Enter the client ID (e.g., `myclient`), choose `openid-connect` as the client protocol, and click "Save".
-    - Set the "Access Type" to `confidential`.
-    - Set the "Valid Redirect URIs" and "Web Origins" as needed.
+    - Enter the client ID (e.g., `offices`), choose `openid-connect` as the client protocol, and click "Save".
     - Click "Save".
+3. **Extract the `admin-cli` Client Secret**:
+   - Follow directions in [EXTRACTING-ADMIN-CLI-CLIENT-SECRET.md](EXTRACTING-ADMIN-CLI-CLIENT-SECRET.md) to extract the `admin-cli` client secret.
+   - Save the client secret for later use. 
 
 #### Step 5: Verify the Setup with HTTP Requests
 
@@ -163,9 +164,6 @@ To verify the setup, you can use HTTP requests to obtain tokens.
 ```bash
 http -a admin-cli:[client secret] --form POST http://localhost:8080/realms/master/protocol/openid-connect/token grant_type=password username=admin password=Pa55w0rd
 ```
-
-2. **Verify the Token**:
-    - Ensure you receive a JSON response with an `access_token`.
 
 #### Step 6: Create a PostgreSQL Dump
 
